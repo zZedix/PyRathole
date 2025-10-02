@@ -53,19 +53,15 @@ import pyrathole
 # Launch a rathole server using an existing configuration file
 pyrathole.start_server("/path/to/server.toml")
 
-# Later, when shutting down:
-pyrathole.stop()
-```
-
-Use `start_client` to run the client side:
-
-```python
-import pyrathole
-
+# Launch a rathole client using an existing configuration file
 pyrathole.start_client("/path/to/client.toml")
+
+# Get rathole version
+version = pyrathole.version()
+print(f"Rathole version: {version}")
 ```
 
-> **Important:** Only one Rathole instance can run per Python process. Attempting to start a second instance before calling `pyrathole.stop()` returns an error.
+> **Important:** This package requires rathole to be installed on your system. Install it from [rathole releases](https://github.com/rapiz1/rathole/releases) or build from source.
 
 ---
 
@@ -101,26 +97,24 @@ token = "super-secret"
 
 ## Runtime & Logging
 
-- pyrathole spins up an internal multi-threaded Tokio runtime on first start.
-- Logging is routed through Rathole's tracing subscriber.
-  - Set `RUST_LOG=debug,pyrathole=trace` (or similar) before importing the module to tweak verbosity.
-- When the optional `console` feature is enabled in the Rust crate, the [tokio-console](https://github.com/tokio-rs/console) subscriber is initialised automatically.
+- pyrathole executes rathole as a subprocess, so logging is handled by the rathole binary itself.
+- Set `RUST_LOG=debug` or similar environment variables to control rathole's logging verbosity.
+- The Python wrapper provides error handling and status checking for the subprocess.
 
 ---
 
-## Stopping Instances
+## Error Handling
 
-Call `pyrathole.stop()` to signal a graceful shutdown. The call returns immediately; the background runtime will wind down existing tunnels before exiting.
+The package provides proper error handling for common issues:
 
 ```python
+import pyrathole
+
 try:
     pyrathole.start_server("server.toml")
-    ...  # serve traffic
-finally:
-    pyrathole.stop()
+except RuntimeError as e:
+    print(f"Failed to start server: {e}")
 ```
-
-If no instance is running, `stop()` raises `RuntimeError`.
 
 ---
 
@@ -191,9 +185,10 @@ Artifacts are written to `target/wheels/`. Inspect them with tools like `auditwh
 
 | Symptom | Possible Cause | Suggested Fix |
 |---------|----------------|---------------|
-| `RuntimeError: rathole instance already running` | You attempted to start a second server/client without stopping the first. | Call `pyrathole.stop()` before starting again. |
-| `RuntimeError: configuration path is required` | `start_server`/`start_client` received an invalid path. | Pass an absolute/relative path to a valid TOML file. |
-| Build fails with `rustc: command not found` | Rust toolchain missing. | Install Rust via <https://rustup.rs/>. |
+| `RuntimeError: Failed to start rathole client/server` | rathole binary not found in PATH | Install rathole from [releases](https://github.com/rapiz1/rathole/releases) or build from source |
+| `RuntimeError: Rathole client/server failed` | Invalid configuration file or network issues | Check your TOML configuration and network connectivity |
+| Build fails with `rustc: command not found` | Rust toolchain missing | Install Rust via [rustup.rs](https://rustup.rs/) |
+| `RuntimeError: Failed to get rathole version` | rathole binary not installed or not in PATH | Ensure rathole is properly installed and accessible |
 
 ---
 
