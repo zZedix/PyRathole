@@ -38,6 +38,62 @@ print(f"Rathole version: {version}")
 - rathole binary installed on your system
 - Valid rathole configuration files
 
+## 🔧 Installing rathole Binary
+
+Before using PyRathole, you need to install the rathole binary on your system:
+
+### Option 1: Download Pre-built Binaries (Recommended)
+
+1. Go to [rathole releases](https://github.com/rapiz1/rathole/releases)
+2. Download the appropriate binary for your system:
+   - **Linux**: `rathole-x86_64-unknown-linux-gnu.tar.gz`
+   - **macOS**: `rathole-x86_64-apple-darwin.tar.gz` or `rathole-aarch64-apple-darwin.tar.gz`
+   - **Windows**: `rathole-x86_64-pc-windows-gnu.zip`
+
+3. Extract and install:
+   ```bash
+   # Linux/macOS
+   tar -xzf rathole-*.tar.gz
+   sudo mv rathole /usr/local/bin/
+   
+   # Windows
+   # Extract the zip file and add the directory to your PATH
+   ```
+
+### Option 2: Install via Package Manager
+
+#### macOS (Homebrew)
+```bash
+brew install rathole
+```
+
+#### Arch Linux
+```bash
+sudo pacman -S rathole
+```
+
+#### Ubuntu/Debian (via cargo)
+```bash
+cargo install rathole
+```
+
+### Option 3: Build from Source
+
+```bash
+git clone https://github.com/rapiz1/rathole.git
+cd rathole
+cargo build --release
+sudo cp target/release/rathole /usr/local/bin/
+```
+
+### Verify Installation
+
+```bash
+rathole --version
+```
+
+This should output the rathole version number.
+
 ## ⚙️ Configuration
 
 PyRathole uses the same configuration format as native rathole. See the [rathole documentation](https://github.com/rapiz1/rathole#configuration) for detailed configuration options.
@@ -89,9 +145,26 @@ except RuntimeError as e:
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `RuntimeError: Failed to start rathole` | rathole not found in PATH | Install rathole from [releases](https://github.com/rapiz1/rathole/releases) |
+| `RuntimeError: Failed to start rathole` | rathole not found in PATH | Install rathole binary and ensure it's in your PATH |
 | `RuntimeError: Rathole failed` | Invalid config or network issues | Check configuration file and network connectivity |
-| `RuntimeError: Failed to get version` | rathole not installed | Ensure rathole is properly installed |
+| `RuntimeError: Failed to get version` | rathole not installed | Ensure rathole is properly installed and accessible |
+| `command not found: rathole` | rathole not in PATH | Add rathole to your system PATH or install it properly |
+| Permission denied | Insufficient permissions | Use `sudo` for system-wide installation or install to user directory |
+
+### Common Installation Issues
+
+**Linux/macOS:**
+```bash
+# Check if rathole is installed
+which rathole
+
+# If not found, add to PATH
+export PATH="/usr/local/bin:$PATH"
+```
+
+**Windows:**
+- Ensure rathole.exe is in a directory that's in your PATH
+- Or add the rathole directory to your system PATH environment variable
 
 ## 📚 Documentation
 
