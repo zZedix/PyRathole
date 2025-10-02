@@ -1,0 +1,20 @@
+[package]
+name = "pyrathole"
+version = "0.1.0"
+edition = "2021"
+description = "Python bindings for the Rathole reverse tunneling proxy"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/zZedix/PyRathole"
+homepage = "https://github.com/zZedix/PyRathole"
+
+[lib]
+name = "pyrathole"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
+rathole = { path = "../rathole" }
+
+[build-dependencies]
+maturin = "1.0"
